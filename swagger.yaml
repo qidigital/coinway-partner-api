@@ -13,10 +13,13 @@ info:
   version: 1.0.11
 
 servers:
-  - url: https://demo.coinway.io/api
+  - url: https://partner.coinway.io/api/partner
 tags:
   - name: HealthCheck
+  - name: Merchant
+  - name: Merchant Wallets
   - name: Invoice
+  - name: Gateway
 paths:
   /healthcheck:
     get:
@@ -144,12 +147,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/invoiceall'
-  /invoice:
+  /merchant/{merchantId}/invoice:
     get:
       security:
         - BearerAuth: []
       tags:
         - Invoice
+      parameters:
+        - name: merchantId
+          in: path
+          description:  Unique merchat id
+          required: true
+          schema:
+            type: string
+            example: m_65e36f37481a6
       summary: Retrieves invoice information
       description: Retrieves invoice information 
       responses:
@@ -164,6 +175,14 @@ paths:
         - BearerAuth: []
       tags:
         - Invoice
+      parameters:
+        - name: merchantId
+          in: path
+          description:  Unique merchat id
+          required: true
+          schema:
+            type: string
+            example: m_65e36f37481a6
       summary: Create a new invoice or payment request
       description: Creating an invoice or payment request with a base fiat currency, i.e. USD
       requestBody:
@@ -295,6 +314,304 @@ paths:
                       format: decimal
                       example: "0.00"
                       description: Total successful transaction amount for the merchant.
+  /gateway/get/{invoiceId}:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Gateway
+      summary: Invoice details
+      description: Retrieves invoice or payment request information, including ID.
+      parameters:
+        - name: invoiceId
+          in: path
+          description:  Unique Invoice Id
+          required: true
+          schema:
+            type: string
+            example: p_65e36f37481a6
+      responses:
+        '200':
+          description: Transaction details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Transaction ID
+                    example: p_671c0f04bc338
+                  reference_id:
+                    type: string
+                    nullable: true
+                    description: Reference ID
+                    example: null
+                  app:
+                    type: integer
+                    description: Application ID
+                    example: 0
+                  currency:
+                    type: string
+                    description: Currency used in the transaction
+                    example: USD
+                  amount:
+                    type: string
+                    description: Transaction amount
+                    example: "20.00"
+                  status:
+                    type: string
+                    description: Status of the transaction
+                    example: processing
+                  notification:
+                    type: string
+                    nullable: true
+                    description: Notification URL
+                    example: null
+                  success_url:
+                    type: string
+                    nullable: true
+                    description: Success URL
+                    example: null
+                  cancel_url:
+                    type: string
+                    nullable: true
+                    description: Cancel URL
+                    example: null
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: Creation timestamp
+                    example: "2024-10-25T21:35:00.000000Z"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    description: Last update timestamp
+                    example: "2024-10-29T00:38:06.000000Z"
+                  wallet_token:
+                    type: string
+                    description: Wallet token for the transaction
+                    example: eyJpdiI6IjRGNFpRUjQybTZNTnB0VEx6eHorMHc9PSIsInZhbHVlIjoiNkR4cmJCRUQzQkFKMzIxWm8ydXJlRmZMckR0R3FuVVlCRkFjZlRtNFpwbz0iLCJtYWMiOiI3Yjc1NjVhYTYyYTJhZGIwMDk0NGY3ZjY4YmNlMTE5YjgwYTE5NDg0MWRmMWU5NmJhNDVjZjFkNjgzNWQwN2U5IiwidGFnIjoiIn0=
+                  capture_customer:
+                    type: boolean
+                    description: Whether customer capture is required
+                    example: false
+                  customer:
+                    type: object
+                    description: Customer details
+                    properties:
+                      id:
+                        type: string
+                        description: Customer ID
+                        example: c_671c0f04bae33
+                      name:
+                        type: string
+                        description: Customer name
+                        example: Shabeer
+                      email:
+                        type: string
+                        description: Customer email address
+                        example: customername@qidigital.com
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: Customer creation timestamp
+                        example: "2024-10-25T21:35:00.000000Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        description: Customer last update timestamp
+                        example: "2024-10-25T21:35:00.000000Z"
+                  wallet:
+                    type: array
+                    description: List of wallets associated with the transaction
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: Wallet ID
+                          example: w_671c0d3e82689
+                        crypto:
+                          type: string
+                          description: Cryptocurrency type
+                          example: BTC
+                        wallet_address:
+                          type: string
+                          description: Wallet address
+                          example: tb1q3q72nv22hlvkwc3qpvaa8s4802y82zucefda0x
+                        created_by:
+                          type: integer
+                          description: Creator ID
+                          example: 1
+                        status:
+                          type: integer
+                          description: Wallet status
+                          example: 1
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: Wallet creation timestamp
+                          example: "2024-10-25T21:27:26.000000Z"
+                        updated_at:
+                          type: string
+                          format: date-time
+                          description: Wallet last update timestamp
+                          example: "2024-10-25T21:27:26.000000Z"
+                  merchant:
+                    type: object
+                    description: Merchant details
+                    properties:
+                      id:
+                        type: integer
+                        description: Merchant ID
+                        example: 1
+                      uid:
+                        type: string
+                        description: Merchant unique identifier
+                        example: m_en383bd9nb
+                      name:
+                        type: string
+                        description: Merchant name
+                        example: X3
+                      website:
+                        type: string
+                        nullable: true
+                        description: Merchant website
+                        example: ""
+                      email:
+                        type: string
+                        nullable: true
+                        description: Merchant email
+                        example: ""
+                      logo:
+                        type: string
+                        nullable: true
+                        description: Merchant logo URL
+                        example: null
+                      email_template:
+                        type: object
+                        description: Email templates used by the merchant
+                        properties:
+                          invoice:
+                            type: string
+                            description: Invoice template
+                            example: Template 1
+                      status:
+                        type: integer
+                        description: Merchant status
+                        example: 1
+                      created_at:
+                        type: string
+                        format: date-time
+                        nullable: true
+                        description: Merchant creation timestamp
+                        example: null
+                      updated_at:
+                        type: string
+                        format: date-time
+                        description: Merchant last update timestamp
+                        example: "2024-11-10T20:32:45.000000Z"
+  /gateway/wallet:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Gateway
+      summary: Get crypto wallet QR code
+      description: Retrieves invoice or payment request information, including ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                wallet:
+                  type: string
+                  description: Unique wallet ID
+                  example: "12345-abcde"
+                wallet_token:
+                  type: string
+                  description: Wallet token
+                  example: "token_abcdef123456"
+              required:
+                - wallet
+                - wallet_token
+      responses:
+        '200':
+          description: Transaction processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  process_token:
+                    type: string
+                    description: A unique token identifying the transaction process
+                    example: eyJpdiI6Iit0UFFVdDRya0JzbnE2c1RaZGRES0E9PSIsInNTQyNWY2OWIzOTkwZTYwMmNiMDQ2Yjk5NzQ5NzE4YzNmZWQ2ZGVhZiIsInRhZyI6IiJ9
+                  wallet:
+                    type: object
+                    description: Wallet details
+                    properties:
+                      id:
+                        type: string
+                        description: Unique wallet ID
+                        example: w_6769b179b1ac2
+                      crypto:
+                        type: string
+                        description: Cryptocurrency type
+                        example: BTC
+                      wallet_address:
+                        type: string
+                        description: Wallet address
+                        example: bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+                      created_by:
+                        type: integer
+                        description: ID of the creator
+                        example: 0
+                      status:
+                        type: integer
+                        description: Status of the wallet
+                        example: 1
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: Creation timestamp
+                        example: 2024-12-23T18:52:41.000000Z
+                      updated_at:
+                        type: string
+                        format: date-time
+                        description: Last updated timestamp
+                        example: 2024-12-23T18:52:41.000000Z
+                  amount:
+                    type: object
+                    description: Transaction amount details
+                    properties:
+                      fiat_currency:
+                        type: string
+                        description: Fiat currency used
+                        example: USD
+                      fiat_amount:
+                        type: string
+                        description: Amount in fiat currency
+                        example: "44.00"
+                      exchange_rate:
+                        type: string
+                        description: Exchange rate at the time of transaction
+                        example: "97717"
+                      crypto_currency:
+                        type: string
+                        description: Cryptocurrency used
+                        example: BTC
+                      crypto_amount:
+                        type: string
+                        description: Amount in cryptocurrency
+                        example: "0.00045028"
+                  qrcode:
+                    type: string
+                    description: QR code data for the transaction
+                    example: bitcoin:bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh?amount=0.00045028&message=p_6769af2edeff0
 components:
   schemas:
     Health:
