@@ -1338,9 +1338,10 @@ body {
 }
 
 .swagger-ui .info p {
-  font-size: 14px;
-  font-family: Open Sans, sans-serif;
-  color: #3b4151
+	font-size: 14px;
+	font-family: Open Sans, sans-serif;
+	color: #3b4151;
+	line-height: 20px;
 }
 
 .swagger-ui .info code {
