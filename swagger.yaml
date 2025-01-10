@@ -2,7 +2,11 @@ openapi: 3.0.3
 info:
   title: Coinway Partner API
   description: |-
-    Coinway is a peer-to-peer payment gateway, which means you or your merchant must have a digital (crypto) currency receiving wallet address. Coinway works with licensed and registered crypto exchanges should you wish to convert your digital and make introductions. Please note, you or your merchant would need to meet the compliance obligations of that or other crypto exchange. You may wish to use your very own self-custodial wallet, please contact our team to discuss the various options. One final note, Coinway or its developers, Qi Digital Limited do not store any funds nor are we in the flow of any funds.
+    Coinway is a peer-to-peer (P2P) payment gateway designed to facilitate seamless transactions using digital (cryptocurrency) payment methods. To use Coinway, you and your merchant must have a digital wallet capable of receiving cryptocurrency. This wallet will serve as the destination for any payments processed through the gateway.
+  
+  features:
+    - peer_to_peer: true
+    - cryptocurrency_wallet_required: true
 
   termsOfService: https://www.qidigital.com/company/terms-and-conditions/
   contact:
